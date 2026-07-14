@@ -1,0 +1,5 @@
+print("====================================")
+print("       Welcome to NEXA AI")
+print("====================================")
+print("System Starting...")
+print("Developer : Nuwantha Sanduka")
