@@ -5,7 +5,9 @@ from scipy.io.wavfile import write
 SAMPLE_RATE = 16000
 DURATION = 5
 
-def record_audio()
+def record_audio():
+
+    filename = "recording.wav"
     folder = "assets/rec"
     print("Recording... Speak now!")
 

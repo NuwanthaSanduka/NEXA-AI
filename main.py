@@ -1,5 +1,6 @@
 from core.voice import speak
 from core.recorder import record_audio
+from core.transcriber import transcribe_audio
 
 print("====================================")
 print("       Welcome to NEXA AI")
@@ -11,11 +12,9 @@ print("Developer : Nuwantha Sanduka")
 speak("Hello Nuwantha. I am Nexa. How can I help you today?")
 
 record_audio()
-# text = listen()
 
-# if text:
-#     print("You said:",text)
-#     speak("I heard "+text)
+text = transcribe_audio("recording.wav")
 
-# else:
-#     speak("Sorry. I could not hear you.")
+print("You said:", text)
+
+speak("I heard " + text)
