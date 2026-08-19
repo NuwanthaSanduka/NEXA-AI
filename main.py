@@ -1,6 +1,8 @@
 from core.voice import speak
 from core.recorder import record_audio
 from core.transcriber import transcribe_audio
+from core.commands import execute_command
+
 
 print("====================================")
 print("       Welcome to NEXA AI")
@@ -17,4 +19,8 @@ text = transcribe_audio("recording.wav")
 
 print("You said:", text)
 
-speak("I heard " + text)
+response = execute_command(text)
+
+print("Nexa:", response)
+
+speak(response)
