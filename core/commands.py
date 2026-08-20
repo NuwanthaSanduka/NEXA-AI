@@ -5,55 +5,28 @@ import webbrowser
 def execute_command(command):
     command = command.lower().strip()
 
-    chrome_commands = [
-        "open chrome",
-        "chrome open",
-        "launch chrome",
-        "start chrome",
-        "open google chrome"
-    ]
+    open_words = ["open", "launch", "start"]
 
-    notepad_commands = [
-        "open notepad",
-        "notepad open",
-        "launch notepad",
-        "start notepad"
-    ]
+    if any(word in command for word in open_words):
 
-    calculator_commands = [
-        "open calculator",
-        "calculator open",
-        "launch calculator",
-        "start calculator",
-        "open calc"
-    ]
+        if "chrome" in command:
+            print("Opening Chrome...")
+            subprocess.Popen("start chrome", shell=True)
+            return "Opening Chrome"
 
-    youtube_commands = [
-        "open youtube",
-        "youtube open",
-        "launch youtube",
-        "start youtube"
-    ]
+        elif "notepad" in command:
+            print("Opening Notepad...")
+            subprocess.Popen("notepad.exe")
+            return "Opening Notepad"
 
-    if any(phrase in command for phrase in chrome_commands):
-        print("Opening Chrome...")
-        subprocess.Popen("start chrome", shell=True)
-        return "Opening Chrome"
+        elif "calculator" in command or "calc" in command:
+            print("Opening Calculator...")
+            subprocess.Popen("calc.exe")
+            return "Opening Calculator"
 
-    elif any(phrase in command for phrase in notepad_commands):
-        print("Opening Notepad...")
-        subprocess.Popen("notepad.exe")
-        return "Opening Notepad"
+        elif "youtube" in command:
+            print("Opening YouTube...")
+            webbrowser.open("https://www.youtube.com")
+            return "Opening YouTube"
 
-    elif any(phrase in command for phrase in calculator_commands):
-        print("Opening Calculator...")
-        subprocess.Popen("calc.exe")
-        return "Opening Calculator"
-
-    elif any(phrase in command for phrase in youtube_commands):
-        print("Opening YouTube...")
-        webbrowser.open("https://www.youtube.com")
-        return "Opening YouTube"
-
-    else:
-        return "Sorry, I don't know that command yet."
+    return "Sorry, I don't know that command yet."
