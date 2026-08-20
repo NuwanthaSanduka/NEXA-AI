@@ -3,7 +3,7 @@ import webbrowser
 
 
 def execute_command(command):
-    command = command.lower()
+    command = command.lower().strip()
 
     if "open chrome" in command:
         print("Opening Chrome...")
