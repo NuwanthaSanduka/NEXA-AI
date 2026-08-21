@@ -69,10 +69,17 @@ def execute_command(command):
             # Low confidence
             print(
                 "Low confidence match:",
-                app_name,
-                "->",
+                 app_name,
+                 "->",
                 matched_name
             )
+
+            return {
+                "type": "confirmation",
+                "message": "Did you mean " + matched_name + "?",
+                "app_name": matched_name,
+                "app_path": app_path
+            }
 
             return "Did you mean " + matched_name + "?"
 
