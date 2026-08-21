@@ -2,7 +2,7 @@ import os
 import webbrowser
 import string
 
-from core.process_manager import close_app
+from core.process_manager import match_window, close_window
 from core.speech_corrector import correct_speech
 from core.app_matcher import match_app
 
@@ -13,7 +13,7 @@ def execute_command(command):
     # Correct common speech recognition mistakes
     command = correct_speech(command)
 
-    # Remove punctuation from speech transcription
+    # Remove punctuation
     command = command.translate(
         str.maketrans("", "", string.punctuation)
     )
@@ -29,7 +29,6 @@ def execute_command(command):
         "for me"
     ]
 
-    # Remove unnecessary natural-language words
     cleaned_command = command
 
     for phrase in filler_words:
@@ -54,23 +53,20 @@ def execute_command(command):
 
         app_name = app_name.strip()
 
-        # Dynamic app matching
         match = match_app(app_name)
 
         if match:
             matched_name, app_path, confidence = match
 
-            # High confidence
             if confidence >= 0.65:
                 print("Opening", matched_name)
                 os.startfile(app_path)
                 return "Opening " + matched_name
 
-            # Low confidence
             print(
                 "Low confidence match:",
-                 app_name,
-                 "->",
+                app_name,
+                "->",
                 matched_name
             )
 
@@ -80,8 +76,6 @@ def execute_command(command):
                 "app_name": matched_name,
                 "app_path": app_path
             }
-
-            return "Did you mean " + matched_name + "?"
 
         return "I could not find " + app_name
 
@@ -97,9 +91,32 @@ def execute_command(command):
 
         app_name = app_name.strip()
 
-        if close_app(app_name):
-            print("Closing", app_name)
-            return "Closing " + app_name
+        match = match_window(app_name)
+
+        if match:
+            window_title, confidence = match
+
+            # High confidence
+            if confidence >= 0.75:
+                if close_window(window_title):
+                    print("Closing", window_title)
+                    return "Closing " + window_title
+
+                return "I could not close " + window_title
+
+            # Low confidence
+            print(
+                "Low confidence close match:",
+                app_name,
+                "->",
+                window_title
+            )
+
+            return {
+                "type": "close_confirmation",
+                "message": "Did you mean close " + window_title + "?",
+                "window_title": window_title
+            }
 
         return "I could not find an open window for " + app_name
 
