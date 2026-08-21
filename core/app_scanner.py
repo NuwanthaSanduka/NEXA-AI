@@ -1,4 +1,5 @@
 import os
+import difflib
 
 
 BLOCKED_WORDS = [
@@ -61,11 +62,30 @@ def find_app(app_name):
 
     app_name = app_name.lower().strip()
 
+    # Exact match
     if app_name in apps:
         return apps[app_name]
 
+    # Partial match
     for installed_name, path in apps.items():
         if app_name in installed_name:
             return path
+
+    # Fuzzy match
+    app_names = list(apps.keys())
+
+    matches = difflib.get_close_matches(
+        app_name,
+        app_names,
+        n=1,
+        cutoff=0.6
+    )
+
+    if matches:
+        matched_app = matches[0]
+
+        print("Matched:", app_name, "->", matched_app)
+
+        return apps[matched_app]
 
     return None
