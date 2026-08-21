@@ -2,12 +2,16 @@ import os
 import webbrowser
 import string
 
-from core.app_scanner import find_app
 from core.process_manager import close_app
+from core.speech_corrector import correct_speech
+from core.app_matcher import match_app
 
 
 def execute_command(command):
     command = command.lower().strip()
+
+    # Correct common speech recognition mistakes
+    command = correct_speech(command)
 
     # Remove punctuation from speech transcription
     command = command.translate(
@@ -33,9 +37,12 @@ def execute_command(command):
 
     cleaned_command = cleaned_command.strip()
 
+    # =========================
     # OPEN APP
+    # =========================
     if any(word in cleaned_command for word in open_words):
 
+        # Special web command
         if "youtube" in cleaned_command:
             print("Opening YouTube...")
             webbrowser.open("https://www.youtube.com")
@@ -48,16 +55,22 @@ def execute_command(command):
 
         app_name = app_name.strip()
 
-        app_path = find_app(app_name)
+        # Dynamic app matching
+        match = match_app(app_name)
 
-        if app_path:
-            print("Opening", app_name)
+        if match:
+            matched_name, app_path = match
+
+            print("Opening", matched_name)
             os.startfile(app_path)
-            return "Opening " + app_name
+
+            return "Opening " + matched_name
 
         return "I could not find " + app_name
 
+    # =========================
     # CLOSE APP
+    # =========================
     if any(word in cleaned_command for word in close_words):
 
         app_name = cleaned_command
