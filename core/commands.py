@@ -11,15 +11,31 @@ def execute_command(command):
     open_words = ["open", "launch", "start"]
     close_words = ["close", "exit", "quit"]
 
-    # OPEN APP
-    if any(word in command for word in open_words):
+    filler_words = [
+        "please",
+        "can you",
+        "could you",
+        "would you",
+        "for me"
+    ]
 
-        if "youtube" in command:
+    # Remove unnecessary natural-language words
+    cleaned_command = command
+
+    for phrase in filler_words:
+        cleaned_command = cleaned_command.replace(phrase, "")
+
+    cleaned_command = cleaned_command.strip()
+
+    # OPEN APP
+    if any(word in cleaned_command for word in open_words):
+
+        if "youtube" in cleaned_command:
             print("Opening YouTube...")
             webbrowser.open("https://www.youtube.com")
             return "Opening YouTube"
 
-        app_name = command
+        app_name = cleaned_command
 
         for word in open_words:
             app_name = app_name.replace(word, "")
@@ -36,9 +52,9 @@ def execute_command(command):
         return "I could not find " + app_name
 
     # CLOSE APP
-    if any(word in command for word in close_words):
+    if any(word in cleaned_command for word in close_words):
 
-        app_name = command
+        app_name = cleaned_command
 
         for word in close_words:
             app_name = app_name.replace(word, "")
