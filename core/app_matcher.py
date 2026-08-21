@@ -16,7 +16,7 @@ def match_app(spoken_name):
     # 1. Exact match
     if spoken_name in apps:
         print("Exact app match:", spoken_name)
-        return spoken_name, apps[spoken_name]
+        return spoken_name, apps[spoken_name], 1.0
 
     # 2. Partial match
     partial_matches = []
@@ -26,26 +26,50 @@ def match_app(spoken_name):
             partial_matches.append(app_name)
 
     if partial_matches:
-        # Prefer the shortest matching name
         best_match = min(partial_matches, key=len)
 
-        print("Partial app match:", spoken_name, "->", best_match)
+        score = difflib.SequenceMatcher(
+            None,
+            spoken_name,
+            best_match
+        ).ratio()
 
-        return best_match, apps[best_match]
+        print(
+            "Partial app match:",
+            spoken_name,
+            "->",
+            best_match,
+            "| confidence:",
+            round(score, 2)
+        )
+
+        return best_match, apps[best_match], score
 
     # 3. Fuzzy match
-    matches = difflib.get_close_matches(
-        spoken_name,
-        app_names,
-        n=1,
-        cutoff=0.5
-    )
+    best_match = None
+    best_score = 0.0
 
-    if matches:
-        best_match = matches[0]
+    for app_name in app_names:
+        score = difflib.SequenceMatcher(
+            None,
+            spoken_name,
+            app_name
+        ).ratio()
 
-        print("Fuzzy app match:", spoken_name, "->", best_match)
+        if score > best_score:
+            best_score = score
+            best_match = app_name
 
-        return best_match, apps[best_match]
+    if best_match:
+        print(
+            "Fuzzy app match:",
+            spoken_name,
+            "->",
+            best_match,
+            "| confidence:",
+            round(best_score, 2)
+        )
+
+        return best_match, apps[best_match], best_score
 
     return None

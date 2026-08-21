@@ -42,7 +42,6 @@ def execute_command(command):
     # =========================
     if any(word in cleaned_command for word in open_words):
 
-        # Special web command
         if "youtube" in cleaned_command:
             print("Opening YouTube...")
             webbrowser.open("https://www.youtube.com")
@@ -59,12 +58,23 @@ def execute_command(command):
         match = match_app(app_name)
 
         if match:
-            matched_name, app_path = match
+            matched_name, app_path, confidence = match
 
-            print("Opening", matched_name)
-            os.startfile(app_path)
+            # High confidence
+            if confidence >= 0.65:
+                print("Opening", matched_name)
+                os.startfile(app_path)
+                return "Opening " + matched_name
 
-            return "Opening " + matched_name
+            # Low confidence
+            print(
+                "Low confidence match:",
+                app_name,
+                "->",
+                matched_name
+            )
+
+            return "Did you mean " + matched_name + "?"
 
         return "I could not find " + app_name
 
