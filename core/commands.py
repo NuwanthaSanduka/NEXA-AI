@@ -1,5 +1,6 @@
 import os
 import webbrowser
+import string
 
 from core.app_scanner import find_app
 from core.process_manager import close_app
@@ -7,6 +8,11 @@ from core.process_manager import close_app
 
 def execute_command(command):
     command = command.lower().strip()
+
+    # Remove punctuation from speech transcription
+    command = command.translate(
+        str.maketrans("", "", string.punctuation)
+    )
 
     open_words = ["open", "launch", "start"]
     close_words = ["close", "exit", "quit"]
