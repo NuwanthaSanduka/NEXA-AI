@@ -2,13 +2,16 @@ import os
 import webbrowser
 
 from core.app_scanner import find_app
+from core.process_manager import close_app
 
 
 def execute_command(command):
     command = command.lower().strip()
 
     open_words = ["open", "launch", "start"]
+    close_words = ["close", "exit", "quit"]
 
+    # OPEN APP
     if any(word in command for word in open_words):
 
         if "youtube" in command:
@@ -31,5 +34,21 @@ def execute_command(command):
             return "Opening " + app_name
 
         return "I could not find " + app_name
+
+    # CLOSE APP
+    if any(word in command for word in close_words):
+
+        app_name = command
+
+        for word in close_words:
+            app_name = app_name.replace(word, "")
+
+        app_name = app_name.strip()
+
+        if close_app(app_name):
+            print("Closing", app_name)
+            return "Closing " + app_name
+
+        return "I could not find an open window for " + app_name
 
     return "Sorry, I don't know that command yet."
